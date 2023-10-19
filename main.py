@@ -15,16 +15,16 @@ phoneNumberLabel.grid(row=1, column=0)
 addressLabel = Label(root, text='Address')
 addressLabel.grid(row=2, column=0)
 
-addButton = Button(root, text='Add')
+addButton = Button(root, text='Add', padx=5, pady=5)
 addButton.grid(row=3, column=0)
 
-viewButton = Button(root, text='View')
+viewButton = Button(root, text='View', padx=5, pady=5)
 viewButton.grid(row=4, column=0)
 
-deleteButton = Button(root, text='Delete')
+deleteButton = Button(root, text='Delete', padx=5, pady=5)
 deleteButton.grid(row=5, column=0)
 
-resetButton = Button(root, text='Reset')
+resetButton = Button(root, text='Reset', padx=5, pady=5)
 resetButton.grid(row=6, column=0)
 
 # Widgets Column 1
