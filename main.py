@@ -33,21 +33,27 @@ def read():
 def add():
     global nameEntry
     global phoneNumberEntry
-    global addressEntry
 
     pe = PhoneEntry()
     pe.name = nameEntry.get()
     pe.phoneNr = phoneNumberEntry.get()
-    listBox.insert(len(dataList) + 1, pe.name)
     dataList.append(pe)
+    with open('data.txt', 'r', encoding='utf-8') as file:
+        no_name_lines = 0
+        for line in file:
+            if 'no name' in line:
+                no_name_lines += 1
 
     with open('data.txt', 'a', encoding='utf-8') as file:
         if pe.name != '' and pe.phoneNr != '':
             file.write(pe.name + ',' + pe.phoneNr + '\n')
+            listBox.insert(len(dataList) + 1, pe.name)
         elif pe.name != '' and pe.phoneNr == '':
             file.write(pe.name + ',' + 'no phone number' + '\n')
+            listBox.insert(len(dataList) + 1, pe.name)
         else:
-            file.write('no name' + ',' + pe.phoneNr + '\n')
+            file.write('no name' + str(no_name_lines + 1) + ',' + pe.phoneNr + '\n')
+            listBox.insert(len(dataList) + 1, 'no name' + str(no_name_lines + 1))
 
     nameEntry.delete(0, END)
     phoneNumberEntry.delete(0, END)
@@ -67,6 +73,7 @@ def view():
             pe.phoneNr = columns[1]
             for i in listBox.curselection():
                 if listBox.get(i) == pe.name:
+                    print(listBox.get(i))
                     nameEntry = Entry(root, width=30)
                     nameEntry.insert(0, pe.name)
                     nameEntry.grid(row=0, column=1)
