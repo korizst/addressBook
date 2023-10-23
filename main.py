@@ -4,7 +4,81 @@ root = Tk()
 root.title('Address Book')
 root.geometry('800x600')
 
+
+class PhoneEntry:
+    name = ''
+    phoneNr = ''
+
+dataList = []
+
+# FUNCTONS
+
+
+# Read data at start
+
+def read():
+    with open('data.txt', 'r', encoding='utf-8') as file:
+        listbox_index = 1
+        for line in file:
+            columns = line.split(',')
+            pe = PhoneEntry()
+            pe.name = columns[0]
+            pe.phoneNr = columns[1]
+            dataList.append(pe)
+            listBox.insert(listbox_index, pe.name)
+            listbox_index += 1
+
+# Add Button Function
+
+def add():
+    global nameEntry
+    global phoneNumberEntry
+    global addressEntry
+
+    pe = PhoneEntry()
+    pe.name = nameEntry.get()
+    pe.phoneNr = phoneNumberEntry.get()
+    listBox.insert(len(dataList) + 1, pe.name)
+    dataList.append(pe)
+
+    with open('data.txt', 'a', encoding='utf-8') as file:
+        if pe.name != '' and pe.phoneNr != '':
+            file.write(pe.name + ',' + pe.phoneNr + '\n')
+        elif pe.name != '' and pe.phoneNr == '':
+            file.write(pe.name + ',' + 'no phone number' + '\n')
+        else:
+            file.write('no name' + ',' + pe.phoneNr + '\n')
+
+    nameEntry.delete(0, END)
+    phoneNumberEntry.delete(0, END)
+    nameEntry.focus()
+
+
+# View Button Function
+def view():
+    global nameEntry
+    global phoneNumberEntry
+
+    with open('data.txt', 'r', encoding='utf-8') as file:
+        for line in file:
+            columns = line.split(',')
+            pe = PhoneEntry()
+            pe.name = columns[0]
+            pe.phoneNr = columns[1]
+            for i in listBox.curselection():
+                if listBox.get(i) == pe.name:
+                    nameEntry = Entry(root, width=30)
+                    nameEntry.insert(0, pe.name)
+                    nameEntry.grid(row=0, column=1)
+                    phoneNumberEntry = Entry(root, width=30)
+                    phoneNumberEntry.insert(0, pe.phoneNr)
+                    phoneNumberEntry.grid(row=1, column=1)
+
+
+
+
 # Widgets Column 0
+
 
 nameLabel = Label(root, text='Name')
 nameLabel.grid(row=0, column=0)
@@ -12,13 +86,13 @@ nameLabel.grid(row=0, column=0)
 phoneNumberLabel = Label(root, text='Phone No.')
 phoneNumberLabel.grid(row=1, column=0)
 
-addressLabel = Label(root, text='Address')
-addressLabel.grid(row=2, column=0)
+# addressLabel = Label(root, text='Address')
+# addressLabel.grid(row=2, column=0)
 
-addButton = Button(root, text='Add', padx=5, pady=5)
+addButton = Button(root, text='Add', command=add, padx=5, pady=5)
 addButton.grid(row=3, column=0)
 
-viewButton = Button(root, text='View', padx=5, pady=5)
+viewButton = Button(root, text='View', command=view, padx=5, pady=5)
 viewButton.grid(row=4, column=0)
 
 deleteButton = Button(root, text='Delete', padx=5, pady=5)
@@ -35,10 +109,12 @@ nameEntry.grid(row=0, column=1)
 phoneNumberEntry = Entry(root, width=30)
 phoneNumberEntry.grid(row=1, column=1)
 
-addressEntry = Text(root, width=30, height=10)
-addressEntry.grid(row=2, column=1)
+# addressEntry = Text(root, width=30, height=10)
+# addressEntry.grid(row=2, column=1)
 
-dataLabel = Label(root, width=20, height=10, borderwidth=1, relief='solid')
-dataLabel.grid(row=3, column=1, rowspan=4)
+listBox = Listbox(root, width=30)
+listBox.grid(row=3, column=1, rowspan=4)
+
+read()
 
 root.mainloop()
