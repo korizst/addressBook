@@ -9,9 +9,10 @@ class PhoneEntry:
     name = ''
     phoneNr = ''
 
+
 dataList = []
 
-# FUNCTONS
+# FUNCTIONS
 
 
 # Read data at start
@@ -29,6 +30,7 @@ def read():
             listbox_index += 1
 
 # Add Button Function
+
 
 def add():
     global nameEntry
@@ -73,15 +75,26 @@ def view():
             pe.phoneNr = columns[1]
             for i in listBox.curselection():
                 if listBox.get(i) == pe.name:
-                    print(listBox.get(i))
                     nameEntry = Entry(root, width=30)
                     nameEntry.insert(0, pe.name)
                     nameEntry.grid(row=0, column=1)
                     phoneNumberEntry = Entry(root, width=30)
                     phoneNumberEntry.insert(0, pe.phoneNr)
                     phoneNumberEntry.grid(row=1, column=1)
+    addButton = Button(root, text='Add', padx=5, pady=5, state=DISABLED)
+    addButton.grid(row=3, column=0)
+    newEntryButton = Button(root, text='New Entry', command=new_entry, padx=5, pady=5)
+    newEntryButton.grid(row=0, column=2, rowspan=2)
 
+def new_entry():
+    global nameEntry
+    global phoneNumberEntry
 
+    nameEntry.delete(0, END)
+    nameEntry.focus()
+    phoneNumberEntry.delete(0, END)
+    addButton = Button(root, text='Add', command=add, padx=5, pady=5)
+    addButton.grid(row=3, column=0)
 
 
 # Widgets Column 0
