@@ -52,13 +52,29 @@ def listbox_pressed(event):
     global view_button
     global delete_button
 
-    add_button = Button(root, text='Add', command=add, padx=5, pady=5, state=DISABLED)
-    add_button.grid(row=4, column=0, padx=5, pady=5)
     new_entry_button = Button(root, text='New Entry', command=new_entry, padx=5, pady=5)
     new_entry_button.grid(row=3, column=0, padx=5, pady=(20, 0))
+    add_button = Button(root, text='Add', padx=5, pady=5, state=DISABLED)
+    add_button.grid(row=4, column=0, padx=5, pady=5)
     view_button = Button(root, text='View', command=view, padx=5, pady=5)
     view_button.grid(row=5, column=0, padx=5, pady=5)
     delete_button = Button(root, text='Delete', command=delete_entry, padx=5, pady=5)
+    delete_button.grid(row=6, column=0, padx=5, pady=5)
+
+
+def out_of_listbox_pressed(event):
+    global add_button
+    global new_entry_button
+    global view_button
+    global delete_button
+
+    new_entry_button = Button(root, text='New Entry', padx=5, pady=5, state=DISABLED)
+    new_entry_button.grid(row=3, column=0, padx=5, pady=(20, 0))
+    add_button = Button(root, text='Add', command=add, padx=5, pady=5)
+    add_button.grid(row=4, column=0, padx=5, pady=5)
+    view_button = Button(root, text='View', padx=5, pady=5, state=DISABLED)
+    view_button.grid(row=5, column=0, padx=5, pady=5)
+    delete_button = Button(root, text='Delete', padx=5, pady=5, state=DISABLED)
     delete_button.grid(row=6, column=0, padx=5, pady=5)
 
 
@@ -120,14 +136,20 @@ def view():
 
 # New Entry Button Function
 def new_entry():
+    clear_fields()
     global add_button
     global new_entry_button
+    global view_button
+    global delete_button
 
-    clear_fields()
-    add_button = Button(root, text='Add', command=add, padx=5, pady=5)
-    add_button.grid(row=4, column=0, padx=5, pady=5)
     new_entry_button = Button(root, text='New Entry', padx=5, pady=5, state=DISABLED)
     new_entry_button.grid(row=3, column=0, padx=5, pady=(20, 0))
+    add_button = Button(root, text='Add', command=add, padx=5, pady=5)
+    add_button.grid(row=4, column=0, padx=5, pady=5)
+    view_button = Button(root, text='View', padx=5, pady=5, state=DISABLED)
+    view_button.grid(row=5, column=0, padx=5, pady=5)
+    delete_button = Button(root, text='Delete', padx=5, pady=5, state=DISABLED)
+    delete_button.grid(row=6, column=0, padx=5, pady=5)
 
 
 # Delete Button Function
@@ -189,9 +211,11 @@ reset_button.grid(row=7, column=0, padx=5, pady=5)
 
 name_entry = Entry(root, width=30)
 name_entry.grid(row=0, column=1)
+name_entry.bind('<Button-1>', out_of_listbox_pressed)
 
 phone_number_entry = Entry(root, width=30)
 phone_number_entry.grid(row=1, column=1)
+phone_number_entry.bind('<Button-1>', out_of_listbox_pressed)
 
 # addressEntry = Text(root, width=30, height=10)
 # addressEntry.grid(row=2, column=1)
