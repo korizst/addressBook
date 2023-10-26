@@ -1,3 +1,4 @@
+import tkinter
 from tkinter import *
 
 root = Tk()
@@ -29,8 +30,19 @@ def read():
             listBox.insert(listbox_index, pe.name)
             listbox_index += 1
 
-# Add Button Function
 
+# Clear Fields Function
+
+def clear_fields():
+    global nameEntry
+    global phoneNumberEntry
+
+    nameEntry.delete(0, END)
+    nameEntry.focus()
+    phoneNumberEntry.delete(0, END)
+
+
+# Add Button Function
 
 def add():
     global nameEntry
@@ -86,19 +98,27 @@ def view():
     newEntryButton = Button(root, text='New Entry', command=new_entry, padx=5, pady=5)
     newEntryButton.grid(row=0, column=2, rowspan=2)
 
-def new_entry():
-    global nameEntry
-    global phoneNumberEntry
 
-    nameEntry.delete(0, END)
-    nameEntry.focus()
-    phoneNumberEntry.delete(0, END)
+# New Entry Button Function
+def new_entry():
+    clear_fields()
     addButton = Button(root, text='Add', command=add, padx=5, pady=5)
     addButton.grid(row=3, column=0)
 
 
-# Widgets Column 0
+# Delete Button Function
+def delete_entry():
+    clear_fields()
+    with open('data.txt', 'r', encoding='utf-8') as infile:
+        lines = infile.readlines()
+        with open('data.txt', 'w', encoding='utf-8') as outfile:
+            for line in lines:
+                for i in listBox.curselection():
+                    if listBox.get(i) not in line:
+                        outfile.write(line)
+    listBox.delete(tkinter.ANCHOR)
 
+# Widgets Column 0
 
 nameLabel = Label(root, text='Name')
 nameLabel.grid(row=0, column=0)
@@ -115,7 +135,7 @@ addButton.grid(row=3, column=0)
 viewButton = Button(root, text='View', command=view, padx=5, pady=5)
 viewButton.grid(row=4, column=0)
 
-deleteButton = Button(root, text='Delete', padx=5, pady=5)
+deleteButton = Button(root, text='Delete', command=delete_entry, padx=5, pady=5)
 deleteButton.grid(row=5, column=0)
 
 resetButton = Button(root, text='Reset', padx=5, pady=5)
