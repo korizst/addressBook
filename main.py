@@ -49,11 +49,17 @@ def clear_fields():
 def listbox_pressed(event):
     global add_button
     global new_entry_button
+    global view_button
+    global delete_button
 
     add_button = Button(root, text='Add', command=add, padx=5, pady=5, state=DISABLED)
     add_button.grid(row=4, column=0, padx=5, pady=5)
     new_entry_button = Button(root, text='New Entry', command=new_entry, padx=5, pady=5)
     new_entry_button.grid(row=3, column=0, padx=5, pady=(20, 0))
+    view_button = Button(root, text='View', command=view, padx=5, pady=5)
+    view_button.grid(row=5, column=0, padx=5, pady=5)
+    delete_button = Button(root, text='Delete', command=delete_entry, padx=5, pady=5)
+    delete_button.grid(row=6, column=0, padx=5, pady=5)
 
 
 # Add Button Function
@@ -126,15 +132,19 @@ def new_entry():
 
 # Delete Button Function
 def delete_entry():
-    clear_fields()
-    with open('data.txt', 'r', encoding='utf-8') as infile:
-        lines = infile.readlines()
-        with open('data.txt', 'w', encoding='utf-8') as outfile:
-            for line in lines:
-                for i in list_box.curselection():
-                    if list_box.get(i) not in line:
-                        outfile.write(line)
-    list_box.delete(tkinter.ANCHOR)
+    response = messagebox.askyesno('Warning!', 'Are you sure you want to delete the selected item?')
+    if response == 1:
+        clear_fields()
+        with open('data.txt', 'r', encoding='utf-8') as infile:
+            lines = infile.readlines()
+            with open('data.txt', 'w', encoding='utf-8') as outfile:
+                for line in lines:
+                    for i in list_box.curselection():
+                        if list_box.get(i) not in line:
+                            outfile.write(line)
+        list_box.delete(tkinter.ANCHOR)
+    else:
+        pass
 
 
 # Reset Button Function
@@ -166,10 +176,10 @@ new_entry_button.grid(row=3, column=0, padx=5, pady=(20, 0))
 add_button = Button(root, text='Add', command=add, padx=5, pady=5)
 add_button.grid(row=4, column=0, padx=5, pady=5)
 
-view_button = Button(root, text='View', command=view, padx=5, pady=5)
+view_button = Button(root, text='View', padx=5, pady=5, state=DISABLED)
 view_button.grid(row=5, column=0, padx=5, pady=5)
 
-delete_button = Button(root, text='Delete', command=delete_entry, padx=5, pady=5)
+delete_button = Button(root, text='Delete', padx=5, pady=5, state=DISABLED)
 delete_button.grid(row=6, column=0, padx=5, pady=5)
 
 reset_button = Button(root, text='Reset', command=reset, padx=5, pady=5)
