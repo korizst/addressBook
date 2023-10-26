@@ -30,6 +30,7 @@ def read():
             dataList.append(pe)
             list_box.insert(listbox_index, pe.name)
             listbox_index += 1
+    name_entry.focus()
 
 
 # Clear Fields Function
@@ -41,6 +42,18 @@ def clear_fields():
     name_entry.delete(0, END)
     name_entry.focus()
     phone_number_entry.delete(0, END)
+
+
+# Disable Add Button by click in the Listbox
+
+def listbox_pressed(event):
+    global add_button
+    global new_entry_button
+
+    add_button = Button(root, text='Add', command=add, padx=5, pady=5, state=DISABLED)
+    add_button.grid(row=4, column=0, padx=5, pady=5)
+    new_entry_button = Button(root, text='New Entry', command=new_entry, padx=5, pady=5)
+    new_entry_button.grid(row=3, column=0, padx=5, pady=(20, 0))
 
 
 # Add Button Function
@@ -79,7 +92,7 @@ def add():
 def view():
     global name_entry
     global phone_number_entry
-    global add_button
+    global new_entry_button
 
     with open('data.txt', 'r', encoding='utf-8') as file:
         for line in file:
@@ -95,19 +108,20 @@ def view():
                     phone_number_entry = Entry(root, width=30)
                     phone_number_entry.insert(0, pe.phoneNr)
                     phone_number_entry.grid(row=1, column=1)
-    add_button = Button(root, text='Add', padx=5, pady=5, state=DISABLED)
-    add_button.grid(row=3, column=0)
     new_entry_button = Button(root, text='New Entry', command=new_entry, padx=5, pady=5)
-    new_entry_button.grid(row=0, column=2, rowspan=2)
+    new_entry_button.grid(row=3, column=0, padx=5, pady=(20, 0))
 
 
 # New Entry Button Function
 def new_entry():
     global add_button
+    global new_entry_button
 
     clear_fields()
     add_button = Button(root, text='Add', command=add, padx=5, pady=5)
-    add_button.grid(row=3, column=0)
+    add_button.grid(row=4, column=0, padx=5, pady=5)
+    new_entry_button = Button(root, text='New Entry', padx=5, pady=5, state=DISABLED)
+    new_entry_button.grid(row=3, column=0, padx=5, pady=(20, 0))
 
 
 # Delete Button Function
@@ -123,8 +137,9 @@ def delete_entry():
     list_box.delete(tkinter.ANCHOR)
 
 
+# Reset Button Function
 def reset():
-    response = messagebox.askyesno('Warning!', 'Are you sure you want to delete all entries?')
+    response = messagebox.askyesno('Warning!', 'Are you sure you want to delete all items?')
     if response == 1:
         clear_fields()
         with open('data.txt', 'a', encoding='utf-8') as infile:
@@ -145,17 +160,20 @@ phone_number_label.grid(row=1, column=0)
 # addressLabel = Label(root, text='Address')
 # addressLabel.grid(row=2, column=0)
 
+new_entry_button = Button(root, text='New Entry', command=new_entry, padx=5, pady=5, state=DISABLED)
+new_entry_button.grid(row=3, column=0, padx=5, pady=(20, 0))
+
 add_button = Button(root, text='Add', command=add, padx=5, pady=5)
-add_button.grid(row=3, column=0)
+add_button.grid(row=4, column=0, padx=5, pady=5)
 
 view_button = Button(root, text='View', command=view, padx=5, pady=5)
-view_button.grid(row=4, column=0)
+view_button.grid(row=5, column=0, padx=5, pady=5)
 
 delete_button = Button(root, text='Delete', command=delete_entry, padx=5, pady=5)
-delete_button.grid(row=5, column=0)
+delete_button.grid(row=6, column=0, padx=5, pady=5)
 
 reset_button = Button(root, text='Reset', command=reset, padx=5, pady=5)
-reset_button.grid(row=6, column=0)
+reset_button.grid(row=7, column=0, padx=5, pady=5)
 
 # Widgets Column 1
 
@@ -169,7 +187,8 @@ phone_number_entry.grid(row=1, column=1)
 # addressEntry.grid(row=2, column=1)
 
 list_box = Listbox(root, width=30)
-list_box.grid(row=3, column=1, rowspan=4)
+list_box.grid(row=3, column=1, rowspan=5)
+list_box.bind('<Button-1>', listbox_pressed)
 
 read()
 
