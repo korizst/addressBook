@@ -10,6 +10,7 @@ root.geometry('800x600')
 class PhoneEntry:
     name = ''
     phoneNr = ''
+    address = ''
 
 
 dataList = []
@@ -23,10 +24,11 @@ def read():
     with open('data.txt', 'r', encoding='utf-8') as file:
         listbox_index = 1
         for line in file:
-            columns = line.split(',')
+            columns = line.split(',', 2)
             pe = PhoneEntry()
             pe.name = columns[0]
             pe.phoneNr = columns[1]
+            pe.address = columns[2]
             dataList.append(pe)
             list_box.insert(listbox_index, pe.name)
             listbox_index += 1
@@ -38,10 +40,12 @@ def read():
 def clear_fields():
     global name_entry
     global phone_number_entry
+    global address_textbox
 
     name_entry.delete(0, END)
     name_entry.focus()
     phone_number_entry.delete(0, END)
+    address_textbox.delete('1.0', END)
 
 
 # Disable Add Button by click in the Listbox
@@ -83,31 +87,24 @@ def out_of_listbox_pressed(event):
 def add():
     global name_entry
     global phone_number_entry
+    global address_textbox
 
     pe = PhoneEntry()
     pe.name = name_entry.get()
     pe.phoneNr = phone_number_entry.get()
+    pe.address = address_textbox.get("1.0", END)
     dataList.append(pe)
-    with open('data.txt', 'r', encoding='utf-8') as file:
-        no_name_lines = 0
-        for line in file:
-            if 'no name' in line:
-                no_name_lines += 1
 
-    with open('data.txt', 'a', encoding='utf-8') as file:
-        if pe.name != '' and pe.phoneNr != '':
-            file.write(pe.name + ',' + pe.phoneNr + '\n')
-            list_box.insert(len(dataList) + 1, pe.name)
-        elif pe.name != '' and pe.phoneNr == '':
-            file.write(pe.name + ',' + 'no phone number' + '\n')
-            list_box.insert(len(dataList) + 1, pe.name)
-        else:
-            file.write('no name' + str(no_name_lines + 1) + ',' + pe.phoneNr + '\n')
-            list_box.insert(len(dataList) + 1, 'no name' + str(no_name_lines + 1))
+    for attr, value in pe.__dict__.items():
+        if value == '' or value == '\n':
+            messagebox.showerror('Missing data', f'One or more fields are empty')
+            #  here should the app return for user, which fields are empty
 
-    name_entry.delete(0, END)
-    phone_number_entry.delete(0, END)
-    name_entry.focus()
+    if pe.name != '' and pe.phoneNr != '' and pe.address != '\n':
+        with open('data.txt', 'a', encoding='utf-8') as file:
+            file.write(pe.name + ',' + pe.phoneNr + ',' + pe.address)
+            list_box.insert(len(dataList) + 1, pe.name)
+            clear_fields()
 
 
 # View Button Function
@@ -189,6 +186,9 @@ name_label.grid(row=0, column=0, padx=10, pady=(20, 0), sticky=W)
 phone_number_label = Label(root, text='Phone No.')
 phone_number_label.grid(row=1, column=0, padx=10, sticky=W)
 
+address_label = Label(root, text='Address')
+address_label.grid(row=2, column=0, padx=10, sticky=W)
+
 new_entry_button = Button(root, text='New Entry', command=new_entry, width=10, padx=5, pady=5, state=DISABLED)
 new_entry_button.grid(row=3, column=0, padx=20, pady=(20, 0))
 
@@ -213,6 +213,9 @@ name_entry.bind('<Button-1>', out_of_listbox_pressed)
 phone_number_entry = Entry(root, width=30)
 phone_number_entry.grid(row=1, column=1)
 phone_number_entry.bind('<Button-1>', out_of_listbox_pressed)
+
+address_textbox = Text(root, width=25, height=10)
+address_textbox.grid(row=2, column=1)
 
 list_box = Listbox(root, width=30)
 list_box.grid(row=3, column=1, rowspan=5)
